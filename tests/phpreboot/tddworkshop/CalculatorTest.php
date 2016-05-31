@@ -14,12 +14,15 @@ class CalculatorTest extends \PHPUnit_Framework_TestCase
      */
     public function invalidNumberProvider()
     {
-        $numbers = "4,a,b,c";
-        return $numbers;
+        return [
+            ["4,a,b,c"],
+            ["-2,-3,-4"],
+            ["1010,1000"]
+        ];
     }
     
     /**
-     * Data provider for invalid array provider
+     * Data provider for valid number provider
      *
      * @return array
      */
@@ -40,16 +43,25 @@ class CalculatorTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    /**
+     * Setup function - create a caluclator object
+     */
     public function setUp()
     {
         $this->calculator = new Calculator();
     }
 
+    /**
+     * Setup function - pass null as a caluclator object
+     */
     public function tearDown()
     {
         $this->calculator = null;
     }
 
+    /**
+     * Test case to check if nothing has been passed as a parameter
+     */
     public function testAddReturnsAnInteger()
     {
         $result = $this->calculator->add();
@@ -57,12 +69,18 @@ class CalculatorTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('integer', $result, 'Result of `add` is not an integer.');
     }
     
+    /**
+     * Test case to check if single parameter has been passed as a parameter
+     */
     public function testAddWithSingleNumberReturnsSameNumber()
     {
         $result = $this->calculator->add('3');
         $this->assertSame(3, $result, 'Add with single number do not returns same number');
     }
     
+    /**
+     * Test case which returns sum successfully
+     */
     public function testAddWithTwoParametersReturnsTheirSum()
     {
         $result = $this->calculator->add('2,4');
@@ -71,8 +89,8 @@ class CalculatorTest extends \PHPUnit_Framework_TestCase
     }
     
     /**
-      * @expectedException \InvalidArgumentException
-      */
+     * @expectedException \InvalidArgumentException
+     */
     public function testAddWithNonStringParameterThrowsException()
     {
         $this->calculator->add(5, 'Integer parameter do not throw error');
@@ -115,5 +133,25 @@ class CalculatorTest extends \PHPUnit_Framework_TestCase
     public function testAddWithInvalidSeparatorThrowException($numbers, $delimeter)
     {
         $this->calculator->add($numbers, $delimeter, 'Invalid separator throw exception');
+    }
+    
+    /**
+     * Testcase for task5,6
+     * @dataProvider invalidNumberProvider
+     * @expectedException \InvalidArgumentException
+     */
+    public function testAddWithNegativeNumberThrowException($numbers)
+    {
+        $this->calculator->add($numbers, '', 'Invalid argument throw exception');
+    }
+    
+    /**
+     * Testcase for task7
+     * @dataProvider invalidNumberProvider
+     * @expectedException \InvalidArgumentException
+     */
+    public function testAddWithLargerNumberThrowException($numbers)
+    {
+        $this->calculator->add($numbers, '', 'Invalid argument throw exception');
     }
 }
